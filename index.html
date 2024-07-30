@@ -1,0 +1,192 @@
+<!-- Chess Application -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Chess App</title>
+        <link rel = "stylesheet" href= "style.css">
+        <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script> import jquery -->
+        <link href='https://fonts.googleapis.com/css?family=Work Sans' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Luckiest Guy' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Bayon' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Audiowide' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Gafata' rel='stylesheet'>
+        <link href='https://fonts.googleapis.com/css?family=Bubblegum Sans' rel='stylesheet'>
+    </head>
+    <body>
+        <div id="gameboard">
+            <div class="cprefix">8</div>
+            <div class="square white" id="1"></div>
+            <div class="square gray" id="2"></div>
+            <div class="square white" id="3"></div>
+            <div class="square gray" id="4"></div>
+            <div class="square white" id="5"></div>
+            <div class="square gray" id="6"></div>
+            <div class="square white" id="7"></div>
+            <div class="square gray" id="8"></div>
+            <div class="cprefix">7</div>
+            <div class="square gray" id="9"></div>
+            <div class="square white" id="10"></div>
+            <div class="square gray" id="11"></div>
+            <div class="square white" id="12"></div>
+            <div class="square gray" id="13"></div>
+            <div class="square white" id="14"></div>
+            <div class="square gray" id="15"></div>
+            <div class="square white" id="16"></div>
+            <div class="cprefix">6</div>
+            <div class="square white" id="17"></div>
+            <div class="square gray" id="18"></div>
+            <div class="square white" id="19"></div>
+            <div class="square gray" id="20"></div>
+            <div class="square white" id="21"></div>
+            <div class="square gray" id="22"></div>
+            <div class="square white" id="23"></div>
+            <div class="square gray" id="24"></div>
+            <div class="cprefix">5</div>
+            <div class="square gray" id="25"></div>
+            <div class="square white" id="26"></div>
+            <div class="square gray" id="27"></div>
+            <div class="square white" id="28"></div>
+            <div class="square gray" id="29"></div>
+            <div class="square white" id="30"></div>
+            <div class="square gray" id="31"></div>
+            <div class="square white" id="32"></div>
+            <div class="cprefix">4</div>
+            <div class="square white" id="33"></div>
+            <div class="square gray" id="34"></div>
+            <div class="square white" id="35"></div>
+            <div class="square gray" id="36"></div>
+            <div class="square white" id="37"></div>
+            <div class="square gray" id="38"></div>
+            <div class="square white" id="39"></div>
+            <div class="square gray" id="40"></div>
+            <div class="cprefix">3</div>
+            <div class="square gray" id="41"></div>
+            <div class="square white" id="42"></div>
+            <div class="square gray" id="43"></div>
+            <div class="square white" id="44"></div>
+            <div class="square gray" id="45"></div>
+            <div class="square white" id="46"></div>
+            <div class="square gray" id="47"></div>
+            <div class="square white" id="48"></div>
+            <div class="cprefix">2</div>
+            <div class="square white" id="49"></div>
+            <div class="square gray" id="50"></div>
+            <div class="square white" id="51"></div>
+            <div class="square gray" id="52"></div>
+            <div class="square white" id="53"></div>
+            <div class="square gray" id="54"></div>
+            <div class="square white" id="55"></div>
+            <div class="square gray" id="56"></div>
+            <div class="cprefix">1</div>
+            <div class="square gray" id="57"></div>
+            <div class="square white" id="58"></div>
+            <div class="square gray" id="59"></div>
+            <div class="square white" id="60"></div>
+            <div class="square gray" id="61"></div>
+            <div class="square white" id="62"></div>
+            <div class="square gray" id="63"></div>
+            <div class="square white" id="64"></div>
+            <div class="cprefix"></div>
+            <div class="cprefix">a</div>
+            <div class="cprefix">b</div>
+            <div class="cprefix">c</div>
+            <div class="cprefix">d</div>
+            <div class="cprefix">e</div>
+            <div class="cprefix">f</div>
+            <div class="cprefix">g</div>
+            <div class="cprefix">h</div>
+            <p id="player">It's White's Turn!</p>
+            <p id="info-display"></p>
+        </div>
+
+        <!-- <div id="gameboard">
+            <div class="cprefix">8</div>
+            <div class="square white" id="a8"></div>
+            <div class="square gray" id="b8"></div>
+            <div class="square white" id="c8"></div>
+            <div class="square gray" id="d8"></div>
+            <div class="square white" id="e8"></div>
+            <div class="square gray" id="f8"></div>
+            <div class="square white" id="g8"></div>
+            <div class="square gray" id="h8"></div>
+            <div class="cprefix">7</div>
+            <div class="square gray" id="a7"></div>
+            <div class="square white" id="b7"></div>
+            <div class="square gray" id="c7"></div>
+            <div class="square white" id="d7"></div>
+            <div class="square gray" id="e7"></div>
+            <div class="square white" id="f7"></div>
+            <div class="square gray" id="g7"></div>
+            <div class="square white" id="h7"></div>
+            <div class="cprefix">6</div>
+            <div class="square white" id="a6"></div>
+            <div class="square gray" id="b6"></div>
+            <div class="square white" id="c6"></div>
+            <div class="square gray" id="d6"></div>
+            <div class="square white" id="e6"></div>
+            <div class="square gray" id="f6"></div>
+            <div class="square white" id="g6"></div>
+            <div class="square gray" id="h6"></div>
+            <div class="cprefix">5</div>
+            <div class="square gray" id="a5"></div>
+            <div class="square white" id="b5"></div>
+            <div class="square gray" id="c5"></div>
+            <div class="square white" id="d5"></div>
+            <div class="square gray" id="e5"></div>
+            <div class="square white" id="f5"></div>
+            <div class="square gray" id="g5"></div>
+            <div class="square white" id="h5"></div>
+            <div class="cprefix">4</div>
+            <div class="square white" id="a4"></div>
+            <div class="square gray" id="b4"></div>
+            <div class="square white" id="c4"></div>
+            <div class="square gray" id="d4"></div>
+            <div class="square white" id="e4"></div>
+            <div class="square gray" id="f4"></div>
+            <div class="square white" id="g4"></div>
+            <div class="square gray" id="h4"></div>
+            <div class="cprefix">3</div>
+            <div class="square gray" id="a3"></div>
+            <div class="square white" id="b3"></div>
+            <div class="square gray" id="c3"></div>
+            <div class="square white" id="d3"></div>
+            <div class="square gray" id="e3"></div>
+            <div class="square white" id="f3"></div>
+            <div class="square gray" id="g3"></div>
+            <div class="square white" id="h3"></div>
+            <div class="cprefix">2</div>
+            <div class="square white" id="a2"></div>
+            <div class="square gray" id="b2"></div>
+            <div class="square white" id="c2"></div>
+            <div class="square gray" id="d2"></div>
+            <div class="square white" id="e2"></div>
+            <div class="square gray" id="f2"></div>
+            <div class="square white" id="g2"></div>
+            <div class="square gray" id="h2"></div>
+            <div class="cprefix">1</div>
+            <div class="square gray" id="a1"></div>
+            <div class="square white" id="b1"></div>
+            <div class="square gray" id="c1"></div>
+            <div class="square white" id="d1"></div>
+            <div class="square gray" id="e1"></div>
+            <div class="square white" id="f1"></div>
+            <div class="square gray" id="g1"></div>
+            <div class="square white" id="h1"></div>
+            <div class="cprefix"></div>
+            <div class="cprefix">a</div>
+            <div class="cprefix">b</div>
+            <div class="cprefix">c</div>
+            <div class="cprefix">d</div>
+            <div class="cprefix">e</div>
+            <div class="cprefix">f</div>
+            <div class="cprefix">g</div>
+            <div class="cprefix">h</div>
+            <p id="player">It's White's Turn!</p>
+            <p id="info-display"></p>
+        </div> -->
+        <script type="text/javascript" src="script.js"></script>
+        <script type="text/javascript" src="pieces.js"></script>
+    </body>
+</html>
