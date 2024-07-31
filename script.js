@@ -51,6 +51,8 @@ allSquares.forEach(square => {
     square.addEventListener('dragstart', dragStart)
     square.addEventListener('dragover', dragOver)
     square.addEventListener('drop', dragDrop)
+    square.addEventListener('mouseover', mouseover)
+    square.addEventListener('mouseout', mouseout);
 })
 
 let startPositionId
@@ -82,6 +84,7 @@ function dragDrop(e) {
             e.target.parentNode.append(draggedElement)
             e.target.remove()
             checkForWin()
+            // checkPossibilites()
             changePlayer()
             return
         }
@@ -93,6 +96,7 @@ function dragDrop(e) {
         else if (valid) {
             e.target.append(draggedElement)
             checkForWin()
+            // checkPossibilites()
             changePlayer()
             return
         }
@@ -255,6 +259,501 @@ function checkIfValid(target) {
     }
 }
 
+
+
+
+const coordinates = {};
+
+i = 1
+while (i <= 64) {
+    // col, row
+    pair = [((i+7)%8)+1, Math.floor((i+7)/8)]
+    coordinates[i] = pair
+    i++
+    // console.log(pair)
+    // window.alert(Math.floor(i+7/8))
+}
+
+// Object.freeze(coordinates)
+// console.log(coordinates[2])
+
+// const allSquares = document.querySelectorAll(".square")
+
+let allMoves
+
+function checkPossibilites() {
+    allMoves = {"pawn": [], "knight": [], "bishop": [], "rook": [], "queen": [], "king": []}
+    // const pawnMoves = []
+    // const knightMoves = []
+    // const bishopMoves = []
+    // const rookMoves = []
+    // const queenMoves = []
+    // const kingMoves = []
+
+    // const whitePawnMoves = []
+    // const whiteKnightMoves = []
+    // const whiteBishopMoves = []
+    // const whiteRookMoves = []
+    // const whiteQueenMoves = []
+    // const whiteKingMoves = []
+    // const blackPawnMoves = []
+    // const blackKnightMoves = []
+    // const blackBishopMoves = []
+    // const blackRookMoves = []
+    // const blackQueenMoves = []
+    // const blackKingMoves = []
+
+    // const targetId = Number(target.getAttribute('square-id')) || Number(target.parentNode.getAttribute('square-id')) // if target.getAttribute('square-id') does not exist, get target.parentNode.getAttribute('square-id')
+    // const startId = Number(startPositionId)
+    // const piece = draggedElement.id
+    // console.log('startId', startId)
+    // console.log('targetId', targetId)
+    // console.log(piece)
+    
+    pieces = []
+    colors = []
+    allSquares.forEach((square) => {
+        const piece = square.firstChild?.id || ''
+        pieces.push(piece)
+        const color = square.firstChild?.firstChild.classList[0]
+        colors.push(color)
+    })
+
+    if (playerGo === "white") {
+        // window.alert("here")
+        pieces.reverse()
+        colors.reverse()
+    }
+
+    console.log(pieces)
+    console.log(colors)
+
+    pieces.forEach((piece, i) => {
+        if (colors[i] === "svg" + playerGo) {
+            key = i + 1
+            switch(piece) {
+                case 'pawn' :
+                    // pawn moving (+0, +1)
+                    coor = coordinates[key].slice()
+                    coor[1]++
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["pawn"].push(key + width);
+
+                    // pawn moving (+0, +2)
+                    const starterRow = [9, 10, 11, 12, 13, 14, 15, 16]
+                    if (starterRow.includes(key)) {
+                        coor = coordinates[key].slice()
+                        coor[1] += 2
+                        if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["pawn"].push(key + (width * 2));
+                    }
+
+                    // pawn moving (-1, +1)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 1
+                    coor[1] += 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["pawn"].push(key + width - 1);
+
+                    // pawn moving (+1, -1)
+                    coor = coordinates[key].slice()
+                    coor[0] += 1
+                    coor[1] -= 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["pawn"].push(key + width + 1);
+                    
+
+                    // if (
+                    //     starterRow.includes(startId) && startId + (width * 2) === targetId ||
+                    //     startId + width === targetId ||
+                    //     startId + width - 1 === targetId && document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
+                    //     startId + width + 1 === targetId && document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild
+                    // ) {
+                    //     return true
+                    // }
+                    break;
+                case 'knight' :
+                    // knight moving (+1, +2)
+                    // console.log("key", key)
+                    coor = coordinates[key].slice()
+                    coor[0] += 1
+                    coor[1] += 2
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key+(width*2)+1);
+
+                    // knight moving (-1, +2)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 1
+                    coor[1] += 2
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key+(width*2)-1);
+
+                    // knight moving (+1, -2)
+                    coor = coordinates[key].slice()
+                    coor[0] += 1
+                    coor[1] -= 2
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key-(width*2)+1);
+
+                    // knight moving (-1, -2)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 1
+                    coor[1] -= 2
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key-(width*2)-1);
+
+                    // knight moving (+2, +1)
+                    coor = 0
+                    coor = coordinates[key].slice()
+                    coor[0] += 2
+                    coor[1] += 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key+width+2);
+
+                    // knight moving (-2, +1)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 2
+                    coor[1] += 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key+width-2);
+
+                    // knight moving (+2, -1)
+                    coor = coordinates[key].slice()
+                    coor[0] += 2
+                    coor[1] -= 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key-width+2);
+
+                    // knight moving (-2, -1)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 2
+                    coor[1] -= 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key-width-2);
+                        
+
+                    // if (
+                    //     startId + (width * 2) + 1 === targetId ||
+                    //     startId + (width * 2) - 1 === targetId ||
+                    //     startId + width - 2 === targetId ||
+                    //     startId + width + 2 === targetId ||
+                    //     startId - (width * 2) + 1 === targetId ||
+                    //     startId - (width * 2) - 1 === targetId ||
+                    //     startId - width - 2 === targetId ||
+                    //     startId - width + 2 === targetId
+                    // ) {
+                    //     return true
+                    // }
+                    break;
+                case 'bishop' :
+                    // bishop moving down right
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+width+1
+                    while (squareOpen) {
+                        coor[0] += 1
+                        coor[1] += 1
+                        allMoves["bishop"].push(loc)
+                        console.log(coor)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["bishop"].pop()
+                            }
+                        }
+                        loc = loc + width + 1
+                    }
+
+                    // bishop moving up left
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-width-1
+                    while (squareOpen) {
+                        coor[0] -= 1
+                        coor[1] -= 1
+                        allMoves["bishop"].push(loc)
+                        console.log(coor)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["bishop"].pop()
+                            }
+                        }
+                        loc = loc - width - 1
+                    }
+
+                    // bishop moving down left
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+width-1
+                    while (squareOpen) {
+                        coor[0] -= 1
+                        coor[1] += 1
+                        allMoves["bishop"].push(loc)
+                        console.log(coor)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["bishop"].pop()
+                            }
+                        }
+                        loc = loc + width - 1
+                    }
+
+                    // bishop moving up right
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-width+1
+                    while (squareOpen) {
+                        coor[0] += 1
+                        coor[1] -= 1
+                        allMoves["bishop"].push(loc)
+                        console.log(coor)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["bishop"].pop()
+                            }
+                        }
+                        loc = loc - width + 1
+                    }
+
+
+                    // if (
+                    //     // plus plus - y=-x
+                    //     startId + width + 1 === targetId ||
+                    //     startId + (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild ||
+                    //     startId + (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) ||
+                    //     startId + (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) ||
+                    //     startId + (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) ||
+                    //     startId + (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) ||
+                    //     startId + (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) + 6}"]`.firstChild) ||
+                    //     // minus minus - y=-x
+                    //     startId - width + 1 === targetId ||
+                    //     startId - (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`).firstChild ||
+                    //     startId - (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) ||
+                    //     startId - (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) ||
+                    //     startId - (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) ||
+                    //     startId - (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) ||
+                    //     startId - (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) - 6}"]`.firstChild) ||
+                    //     // minus plus - y=x
+                    //     startId - width + 1 === targetId ||
+                    //     startId - (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`).firstChild ||
+                    //     startId - (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) ||
+                    //     startId - (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) ||
+                    //     startId - (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) ||
+                    //     startId - (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) ||
+                    //     startId - (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) + 6}"]`.firstChild) ||
+                    //     // plus minus - y=x
+                    //     startId + width - 1 === targetId ||
+                    //     startId + (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
+                    //     startId + (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) ||
+                    //     startId + (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) ||
+                    //     startId + (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) ||
+                    //     startId + (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) ||
+                    //     startId + (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) - 6}"]`.firstChild)
+                    // ) {
+                    //     return true
+                    // }
+                    break;
+                // case 'rook' :
+                //     // rook moving vertically down
+                //     squareOpen = true
+                //     coor = coordinates[key].slice()
+                //     loc = key+width
+                //     while (squareOpen) {
+                //         coor[0] += 1
+                //         coor[1] -= 1
+                //         allMoves["bishop"].push(loc)
+                //         console.log(coor)
+                        
+                //         if (
+                //             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                //             (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                //         ) {
+                //             // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+                //             // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+                //             squareOpen = false
+                //             if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                //                 allMoves["bishop"].pop()
+                //             }
+                //         }
+                //         loc = loc - width + 1
+                //     }
+
+                    
+                // //     if (
+                // //         // vertically
+                // //         Math.abs(targetId - startId) % width === 0 && !document.querySelector(`[square-id="${targetId}"]`).firstChild && targetId != startId ||
+                // //         // horizontally - fix this to not go over rows
+                // //         Math.abs(targetId - startId) < 8
+                // //     ) {
+                // //         return true
+                // //     }
+                //     break;
+                // case 'queen':
+                //     if (
+                //         // bishop
+                //         // plus plus - y=-x
+                //         startId + width + 1 === targetId ||
+                //         startId + (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild ||
+                //         startId + (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) ||
+                //         startId + (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) ||
+                //         startId + (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) ||
+                //         startId + (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) ||
+                //         startId + (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) + 6}"]`.firstChild) ||
+                //         // minus minus - y=-x
+                //         startId - width + 1 === targetId ||
+                //         startId - (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`).firstChild ||
+                //         startId - (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) ||
+                //         startId - (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) ||
+                //         startId - (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) ||
+                //         startId - (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) ||
+                //         startId - (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) - 6}"]`.firstChild) ||
+                //         // minus plus - y=x
+                //         startId - width + 1 === targetId ||
+                //         startId - (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`).firstChild ||
+                //         startId - (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) ||
+                //         startId - (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) ||
+                //         startId - (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) ||
+                //         startId - (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) ||
+                //         startId - (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) + 6}"]`.firstChild) ||
+                //         // plus minus - y=x
+                //         startId + width - 1 === targetId ||
+                //         startId + (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
+                //         startId + (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) ||
+                //         startId + (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) ||
+                //         startId + (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) ||
+                //         startId + (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) ||
+                //         startId + (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) - 6}"]`.firstChild) ||
+        
+                //         // rook
+                //         // vertically
+                //         Math.abs(targetId - startId) % width === 0 && !document.querySelector(`[square-id="${targetId}"]`).firstChild && targetId != startId ||
+                //         // horizontally - fix this to not go over rows
+                //         Math.abs(targetId - startId) < 8
+                //     ) {
+                //         return true
+                //     }
+                //     break;
+                // case 'king':
+                //     if (
+                //         startId + 1 === targetId ||
+                //         startId - 1 === targetId ||
+                //         startId + width === targetId ||
+                //         startId - width === targetId ||
+                //         startId + width + 1 === targetId ||
+                //         startId + width - 1 === targetId ||
+                //         startId - width + 1 === targetId ||
+                //         startId - width - 1 === targetId
+                //     ) {
+                //         return true
+                //     }
+                //     break;
+            }
+        }
+    
+    })
+
+    // if (playerGo === "white") {
+    //     if 
+    // } else {
+
+    // }
+    // console.log(allMoves["knight"])
+    // allSquares.forEach(square => {
+    //     square.style.backgroundColor = "gray"
+    //     if (allMoves["knight"].includes(Number(square.getAttribute("square-id")))) {
+    //         // console.log(Number(square.getAttribute("square-id")))
+    //         square.style.backgroundColor = "green"
+    //     }
+    // })
+
+    // const piece = draggedElement.id
+    // console.log(piece)
+}
+
+checkPossibilites() // run once at the start
+
+
+function mouseover(e) {
+    let hoverPiece
+    let colorPiece
+
+    hoverBool = !e.target.getAttribute('square-id')
+    // console.log(hoverBool)
+    // window.alert("hi")
+    // console.log(e.target.getAttribute('square-id'))
+    if (hoverBool) {
+        hoverPiece = e.target.getAttribute('id')
+        // hoverPieceUnique = e.target.parentNode.getAttribute('square-id')
+        colorPiece = e.target.firstChild.classList[0]
+    }
+    // console.log(hoverPiece)
+
+    if (colorPiece === "svg" + playerGo) {
+        allSquares.forEach(square => {
+            square.style.backgroundColor = "gray"
+            if (allMoves[hoverPiece]?.includes(Number(square.getAttribute("square-id"))) && !square.firstChild?.firstChild.classList.contains("svg" + playerGo)) {
+                // console.log(Number(square.getAttribute("square-id")))
+                square.style.backgroundColor = "green"
+            }
+        })
+    }
+
+    // console.log(allMoves[hoverPiece])
+
+    // if (playerGo === "white") {
+    //     hoverBool = !e.target.getAttribute('square-id')
+    //     // window.alert("hi")
+    //     // console.log(e.target.getAttribute('square-id'))
+    //     if (hoverBool) {
+    //         hoverPiece = e.target.parentNode.getAttribute('square-id')
+            
+    //     }
+    //     console.log(hoverPiece)
+    // } 
+    
+    // else if (playerGo === "black") {
+    //     hoverBool = !e.target.getAttribute('square-id')
+    //     if (hoverBool) {
+    //         hoverPiece = e.target.parentNode.getAttribute('square-id')
+    //     }
+    //     console.log(hoverPiece)
+    // }
+    // else {
+
+    // }
+    // console.log(allMoves["knight"])
+    // allSquares.forEach(square => {
+    //     square.style.backgroundColor = "gray"
+    //     if (allMoves["knight"].includes(Number(square.getAttribute("square-id")))) {
+    //         // console.log(Number(square.getAttribute("square-id")))
+    //         square.style.backgroundColor = "green"
+    //     }
+    // })
+}
+
+function mouseout(e) {
+    allSquares.forEach(square => {
+        square.style.backgroundColor = "gray"
+    })
+}
+
+
+
 // function checkMate() {
 //     pawnMoves = []
 //     knightMoves = []
@@ -265,10 +764,14 @@ function checkIfValid(target) {
 // }
 
 function changePlayer() {
+    // make a var = checkPossibilites() and end game if checkmate immediately
+
     const squareBorder = document.querySelectorAll(".square")
     const cprefix = document.querySelectorAll(".cprefix")
 
     if (playerGo === "black") {
+        playerGo = "white"
+        checkPossibilites()
         squareBorder.forEach((square) => {
             square.style.border = '3px solid black'
         });
@@ -277,9 +780,10 @@ function changePlayer() {
         });
 
         reverseIds()
-        playerGo = "white"
         playerDisplay.innerHTML = "<p id='color-white'>It's <span class='bold-white'>White</span>'s Turn!</p>"
     } else {
+        playerGo = "black"
+        checkPossibilites()
         squareBorder.forEach((square) => {
             square.style.border = '3px solid white'
         });
@@ -288,7 +792,6 @@ function changePlayer() {
         });
 
         revertIds()
-        playerGo = "black"
         playerDisplay.innerHTML = "<p id='color-black'>It's <span class='bold-black'>Black</span>'s Turn!</p>"
     }
 }
