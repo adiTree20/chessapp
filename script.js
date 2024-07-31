@@ -125,133 +125,44 @@ function checkIfValid(target) {
 
     switch(piece) {
         case 'pawn' :
-            const starterRow = [9, 10, 11, 12, 13, 14, 15, 16]
             if (
-                starterRow.includes(startId) && startId + (width * 2) === targetId ||
-                startId + width === targetId ||
-                startId + width - 1 === targetId && document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
-                startId + width + 1 === targetId && document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild
+                allMoves["pawn"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'knight':
             if (
-                startId + (width * 2) + 1 === targetId ||
-                startId + (width * 2) - 1 === targetId ||
-                startId + width - 2 === targetId ||
-                startId + width + 2 === targetId ||
-                startId - (width * 2) + 1 === targetId ||
-                startId - (width * 2) - 1 === targetId ||
-                startId - width - 2 === targetId ||
-                startId - width + 2 === targetId
+                allMoves["knight"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'bishop':
             if (
-                // plus plus - y=-x
-                startId + width + 1 === targetId ||
-                startId + (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild ||
-                startId + (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) ||
-                startId + (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) ||
-                startId + (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) ||
-                startId + (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) ||
-                startId + (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) + 6}"]`.firstChild) ||
-                // minus minus - y=-x
-                startId - width + 1 === targetId ||
-                startId - (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`).firstChild ||
-                startId - (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) ||
-                startId - (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) ||
-                startId - (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) ||
-                startId - (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) ||
-                startId - (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) - 6}"]`.firstChild) ||
-                // minus plus - y=x
-                startId - width + 1 === targetId ||
-                startId - (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`).firstChild ||
-                startId - (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) ||
-                startId - (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) ||
-                startId - (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) ||
-                startId - (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) ||
-                startId - (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) + 6}"]`.firstChild) ||
-                // plus minus - y=x
-                startId + width - 1 === targetId ||
-                startId + (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
-                startId + (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) ||
-                startId + (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) ||
-                startId + (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) ||
-                startId + (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) ||
-                startId + (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) - 6}"]`.firstChild)
+                allMoves["bishop"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'rook':
-            if (
-                // vertically
-                Math.abs(targetId - startId) % width === 0 && !document.querySelector(`[square-id="${targetId}"]`).firstChild && targetId != startId ||
-                // horizontally - fix this to not go over rows
-                Math.abs(targetId - startId) < 8
+            console.log(allMoves["rook"])
+            if (                
+                allMoves["rook"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'queen':
             if (
-                // bishop
-                // plus plus - y=-x
-                startId + width + 1 === targetId ||
-                startId + (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild ||
-                startId + (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) ||
-                startId + (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) ||
-                startId + (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) ||
-                startId + (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) ||
-                startId + (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) + 6}"]`.firstChild) ||
-                // minus minus - y=-x
-                startId - width + 1 === targetId ||
-                startId - (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`).firstChild ||
-                startId - (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) ||
-                startId - (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) ||
-                startId - (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) ||
-                startId - (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) ||
-                startId - (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) - 6}"]`.firstChild) ||
-                // minus plus - y=x
-                startId - width + 1 === targetId ||
-                startId - (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`).firstChild ||
-                startId - (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) ||
-                startId - (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) ||
-                startId - (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) ||
-                startId - (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) ||
-                startId - (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) + 6}"]`.firstChild) ||
-                // plus minus - y=x
-                startId + width - 1 === targetId ||
-                startId + (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
-                startId + (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) ||
-                startId + (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) ||
-                startId + (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) ||
-                startId + (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) ||
-                startId + (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) - 6}"]`.firstChild) ||
-
-                // rook
-                // vertically
-                Math.abs(targetId - startId) % width === 0 && !document.querySelector(`[square-id="${targetId}"]`).firstChild && targetId != startId ||
-                // horizontally - fix this to not go over rows
-                Math.abs(targetId - startId) < 8
+                allMoves["queen"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'king':
             if (
-                startId + 1 === targetId ||
-                startId - 1 === targetId ||
-                startId + width === targetId ||
-                startId - width === targetId ||
-                startId + width + 1 === targetId ||
-                startId + width - 1 === targetId ||
-                startId - width + 1 === targetId ||
-                startId - width - 1 === targetId
+                allMoves["king"].includes(targetId)
             ) {
                 return true
             }
@@ -283,32 +194,6 @@ let allMoves
 
 function checkPossibilites() {
     allMoves = {"pawn": [], "knight": [], "bishop": [], "rook": [], "queen": [], "king": []}
-    // const pawnMoves = []
-    // const knightMoves = []
-    // const bishopMoves = []
-    // const rookMoves = []
-    // const queenMoves = []
-    // const kingMoves = []
-
-    // const whitePawnMoves = []
-    // const whiteKnightMoves = []
-    // const whiteBishopMoves = []
-    // const whiteRookMoves = []
-    // const whiteQueenMoves = []
-    // const whiteKingMoves = []
-    // const blackPawnMoves = []
-    // const blackKnightMoves = []
-    // const blackBishopMoves = []
-    // const blackRookMoves = []
-    // const blackQueenMoves = []
-    // const blackKingMoves = []
-
-    // const targetId = Number(target.getAttribute('square-id')) || Number(target.parentNode.getAttribute('square-id')) // if target.getAttribute('square-id') does not exist, get target.parentNode.getAttribute('square-id')
-    // const startId = Number(startPositionId)
-    // const piece = draggedElement.id
-    // console.log('startId', startId)
-    // console.log('targetId', targetId)
-    // console.log(piece)
     
     pieces = []
     colors = []
@@ -332,6 +217,7 @@ function checkPossibilites() {
         if (colors[i] === "svg" + playerGo) {
             key = i + 1
             switch(piece) {
+                // all comments correspond to the original black turn perspective
                 case 'pawn' :
                     // pawn moving (+0, +1)
                     coor = coordinates[key].slice()
@@ -370,7 +256,6 @@ function checkPossibilites() {
                     break;
                 case 'knight' :
                     // knight moving (+1, +2)
-                    // console.log("key", key)
                     coor = coordinates[key].slice()
                     coor[0] += 1
                     coor[1] += 2
@@ -442,7 +327,6 @@ function checkPossibilites() {
                         coor[0] += 1
                         coor[1] += 1
                         allMoves["bishop"].push(loc)
-                        console.log(coor)
                         
                         if (
                             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
@@ -466,7 +350,6 @@ function checkPossibilites() {
                         coor[0] -= 1
                         coor[1] -= 1
                         allMoves["bishop"].push(loc)
-                        console.log(coor)
                         
                         if (
                             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
@@ -490,7 +373,6 @@ function checkPossibilites() {
                         coor[0] -= 1
                         coor[1] += 1
                         allMoves["bishop"].push(loc)
-                        console.log(coor)
                         
                         if (
                             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
@@ -514,7 +396,6 @@ function checkPossibilites() {
                         coor[0] += 1
                         coor[1] -= 1
                         allMoves["bishop"].push(loc)
-                        console.log(coor)
                         
                         if (
                             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
@@ -529,7 +410,6 @@ function checkPossibilites() {
                         }
                         loc = loc - width + 1
                     }
-
 
                     // if (
                     //     // plus plus - y=-x
@@ -568,30 +448,88 @@ function checkPossibilites() {
                     //     return true
                     // }
                     break;
-                // case 'rook' :
-                //     // rook moving vertically down
-                //     squareOpen = true
-                //     coor = coordinates[key].slice()
-                //     loc = key+width
-                //     while (squareOpen) {
-                //         coor[0] += 1
-                //         coor[1] -= 1
-                //         allMoves["bishop"].push(loc)
-                //         console.log(coor)
+                case 'rook' :
+                    // rook moving vertically down
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+width
+                    while (squareOpen) {
+                        coor[1] += 1
+                        allMoves["rook"].push(loc)
                         
-                //         if (
-                //             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
-                //             (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
-                //         ) {
-                //             // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
-                //             // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
-                //             squareOpen = false
-                //             if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
-                //                 allMoves["bishop"].pop()
-                //             }
-                //         }
-                //         loc = loc - width + 1
-                //     }
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["rook"].pop()
+                            }
+                        }
+                        loc = loc + width
+                    }
+
+                    // rook moving vertically up
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-width
+                    while (squareOpen) {
+                        coor[1] -= 1
+                        allMoves["rook"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["rook"].pop()
+                            }
+                        }
+                        loc = loc - width
+                    }
+
+                    // rook moving horizontally left
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-1
+                    while (squareOpen) {
+                        coor[0] -= 1
+                        allMoves["rook"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["rook"].pop()
+                            }
+                        }
+                        loc = loc - 1
+                    }
+
+                    // rook moving horizontally right
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+1
+                    while (squareOpen) {
+                        coor[0] += 1
+                        allMoves["rook"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["rook"].pop()
+                            }
+                        }
+                        loc = loc + 1
+                    }
 
                     
                 // //     if (
@@ -602,8 +540,172 @@ function checkPossibilites() {
                 // //     ) {
                 // //         return true
                 // //     }
-                //     break;
-                // case 'queen':
+                    break;
+                case 'queen':
+                    // queen moving down right
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+width+1
+                    while (squareOpen) {
+                        coor[0] += 1
+                        coor[1] += 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc + width + 1
+                    }
+
+                    // queen moving up left
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-width-1
+                    while (squareOpen) {
+                        coor[0] -= 1
+                        coor[1] -= 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc - width - 1
+                    }
+
+                    // queen moving down left
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+width-1
+                    while (squareOpen) {
+                        coor[0] -= 1
+                        coor[1] += 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc + width - 1
+                    }
+
+                    // queen moving up right
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-width+1
+                    while (squareOpen) {
+                        coor[0] += 1
+                        coor[1] -= 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc - width + 1
+                    }
+
+                    // queen moving vertically down
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+width
+                    while (squareOpen) {
+                        coor[1] += 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc + width
+                    }
+
+                    // queen moving vertically up
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-width
+                    while (squareOpen) {
+                        coor[1] -= 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc - width
+                    }
+
+                    // queen moving horizontally left
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key-1
+                    while (squareOpen) {
+                        coor[0] -= 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc - 1
+                    }
+
+                    // queen moving horizontally right
+                    squareOpen = true
+                    coor = coordinates[key].slice()
+                    loc = key+1
+                    while (squareOpen) {
+                        coor[0] += 1
+                        allMoves["queen"].push(loc)
+                        
+                        if (
+                            1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+                            (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+                        ) {
+                            squareOpen = false
+                            if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+                                allMoves["queen"].pop()
+                            }
+                        }
+                        loc = loc + 1
+                    }
+
                 //     if (
                 //         // bishop
                 //         // plus plus - y=-x
@@ -647,21 +749,94 @@ function checkPossibilites() {
                 //     ) {
                 //         return true
                 //     }
-                //     break;
-                // case 'king':
-                //     if (
-                //         startId + 1 === targetId ||
-                //         startId - 1 === targetId ||
-                //         startId + width === targetId ||
-                //         startId - width === targetId ||
-                //         startId + width + 1 === targetId ||
-                //         startId + width - 1 === targetId ||
-                //         startId - width + 1 === targetId ||
-                //         startId - width - 1 === targetId
-                //     ) {
-                //         return true
-                //     }
-                //     break;
+                    break;
+                case 'king':
+                    function isPawnAttacking(curCoor) {
+                        squareOne = [curCoor[0]+1, curCoor[1]+1]
+                        squareTwo = [curCoor[0]-1, curCoor[1]+1]
+
+                        const keyOne = Object.keys(coordinates).find(keyOneTemp => coordinates[keyOneTemp].toString() === squareOne.toString());
+                        const keyTwo = Object.keys(coordinates).find(keyTwoTemp => coordinates[keyTwoTemp].toString() === squareTwo.toString())
+
+                        if (playerGo === "black") {
+                            currentPieceOne = allSquares[keyOne-1].firstChild?.id === "pawn"
+                            currentPieceTwo = allSquares[keyTwo-1].firstChild?.id === "pawn"
+                            if (
+                                (currentPieceOne && allSquares[keyOne-1].firstChild.firstChild.classList.contains("svgwhite")) ||
+                                (currentPieceTwo && allSquares[keyTwo-1].firstChild.firstChild.classList.contains("svgwhite"))
+                            ) {
+                                console.log(keyOne, keyTwo)
+                                allSquares[keyOne-1].style.backgroundColor = "blue"
+                                allSquares[keyTwo-1].style.backgroundColor = "blue"
+                                return false
+                            }
+                        } else {
+                            currentPieceOne = allSquares[64-keyOne].firstChild?.id === "pawn"
+                            currentPieceTwo = allSquares[64-keyTwo].firstChild?.id === "pawn"
+                            if (
+                                (currentPieceOne && allSquares[64-keyOne].firstChild.firstChild.classList.contains("svgblack")) ||
+                                (currentPieceTwo && allSquares[64-keyTwo].firstChild.firstChild.classList.contains("svgblack"))
+                            ) {
+                                console.log(keyOne, keyTwo)
+                                allSquares[keyOne-1].style.backgroundColor = "purple"
+                                allSquares[keyTwo-1].style.backgroundColor = "purple"
+                                return false
+                            }
+                        }
+
+                        return true
+                        
+                    }
+
+                    // king moving (+1, +0)
+                    coor = coordinates[key].slice()
+                    coor[0] += 1
+                    coor[1] += 0
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key+1);
+
+                    // king moving (-1, +0)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 1
+                    coor[1] += 0
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key-1);
+
+                    // king moving (+0, +1)
+                    coor = coordinates[key].slice()
+                    coor[0] += 0
+                    coor[1] += 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key+width);
+
+                    // king moving (+0, -1)
+                    coor = coordinates[key].slice()
+                    coor[0] += 0
+                    coor[1] -= 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key-width);
+
+                    // king moving (+1, +1)
+                    coor = coordinates[key].slice()
+                    coor[0] += 1
+                    coor[1] += 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key+1+width);
+
+                    // king moving (-1, +1)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 1
+                    coor[1] += 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key-1+width);
+
+                    // king moving (+1, -1)
+                    coor = coordinates[key].slice()
+                    coor[0] += 1
+                    coor[1] -= 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key+1-width);
+
+                    // king moving (-1, -1)
+                    coor = coordinates[key].slice()
+                    coor[0] -= 1
+                    coor[1] -= 1
+                    if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMoves["king"].push(key-1-width);
+
+                    break;
             }
         }
     
@@ -748,7 +923,7 @@ function mouseover(e) {
 
 function mouseout(e) {
     allSquares.forEach(square => {
-        square.style.backgroundColor = "gray"
+        square.style.backgroundColor = null
     })
 }
 
