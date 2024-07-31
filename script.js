@@ -8,6 +8,7 @@ const knight = '<div class="piece" id="knight"><svg xmlns="http://www.w3.org/200
 const gameBoard = document.getElementById("gameboard");
 const playerDisplay = document.getElementById("playerbox");
 const infoDisplay = document.getElementById("info-display");
+let allPossibleMoves = {}
 const width = 8;
 
 let playerGo = "black";
@@ -126,43 +127,43 @@ function checkIfValid(target) {
     switch(piece) {
         case 'pawn' :
             if (
-                allMoves["pawn"].includes(targetId)
+                allPossibleMoves["pawn"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'knight':
             if (
-                allMoves["knight"].includes(targetId)
+                allPossibleMoves["knight"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'bishop':
             if (
-                allMoves["bishop"].includes(targetId)
+                allPossibleMoves["bishop"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'rook':
-            console.log(allMoves["rook"])
+            console.log(allPossibleMoves["rook"])
             if (                
-                allMoves["rook"].includes(targetId)
+                allPossibleMoves["rook"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'queen':
             if (
-                allMoves["queen"].includes(targetId)
+                allPossibleMoves["queen"].includes(targetId)
             ) {
                 return true
             }
             break;
         case 'king':
             if (
-                allMoves["king"].includes(targetId)
+                allPossibleMoves["king"].includes(targetId)
             ) {
                 return true
             }
@@ -190,10 +191,9 @@ while (i <= 64) {
 
 // const allSquares = document.querySelectorAll(".square")
 
-let allMoves
-
 function checkPossibilites() {
     allMoves = {"pawn": [], "knight": [], "bishop": [], "rook": [], "queen": [], "king": []}
+    // allMovesOpp = {"pawn": [], "knight": [], "bishop": [], "rook": [], "queen": [], "king": []}
     
     pieces = []
     colors = []
@@ -214,7 +214,7 @@ function checkPossibilites() {
     console.log(colors)
 
     pieces.forEach((piece, i) => {
-        if (colors[i] === "svg" + playerGo) {
+        if (colors[i] === "svg" + playerGo) { // only add current playerGo color piece locations to allMoves
             key = i + 1
             switch(piece) {
                 // all comments correspond to the original black turn perspective
@@ -244,15 +244,6 @@ function checkPossibilites() {
                     coor[1] -= 1
                     if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["pawn"].push(key + width + 1);
                     
-
-                    // if (
-                    //     starterRow.includes(startId) && startId + (width * 2) === targetId ||
-                    //     startId + width === targetId ||
-                    //     startId + width - 1 === targetId && document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
-                    //     startId + width + 1 === targetId && document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild
-                    // ) {
-                    //     return true
-                    // }
                     break;
                 case 'knight' :
                     // knight moving (+1, +2)
@@ -304,19 +295,6 @@ function checkPossibilites() {
                     coor[1] -= 1
                     if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMoves["knight"].push(key-width-2);
                         
-
-                    // if (
-                    //     startId + (width * 2) + 1 === targetId ||
-                    //     startId + (width * 2) - 1 === targetId ||
-                    //     startId + width - 2 === targetId ||
-                    //     startId + width + 2 === targetId ||
-                    //     startId - (width * 2) + 1 === targetId ||
-                    //     startId - (width * 2) - 1 === targetId ||
-                    //     startId - width - 2 === targetId ||
-                    //     startId - width + 2 === targetId
-                    // ) {
-                    //     return true
-                    // }
                     break;
                 case 'bishop' :
                     // bishop moving down right
@@ -355,8 +333,6 @@ function checkPossibilites() {
                             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
                             (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
                         ) {
-                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
-                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
                             squareOpen = false
                             if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
                                 allMoves["bishop"].pop()
@@ -378,8 +354,6 @@ function checkPossibilites() {
                             1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
                             (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
                         ) {
-                            // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
-                            // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
                             squareOpen = false
                             if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
                                 allMoves["bishop"].pop()
@@ -411,42 +385,6 @@ function checkPossibilites() {
                         loc = loc - width + 1
                     }
 
-                    // if (
-                    //     // plus plus - y=-x
-                    //     startId + width + 1 === targetId ||
-                    //     startId + (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild ||
-                    //     startId + (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) ||
-                    //     startId + (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) ||
-                    //     startId + (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) ||
-                    //     startId + (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) ||
-                    //     startId + (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) + 6}"]`.firstChild) ||
-                    //     // minus minus - y=-x
-                    //     startId - width + 1 === targetId ||
-                    //     startId - (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`).firstChild ||
-                    //     startId - (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) ||
-                    //     startId - (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) ||
-                    //     startId - (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) ||
-                    //     startId - (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) ||
-                    //     startId - (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) - 6}"]`.firstChild) ||
-                    //     // minus plus - y=x
-                    //     startId - width + 1 === targetId ||
-                    //     startId - (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`).firstChild ||
-                    //     startId - (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) ||
-                    //     startId - (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) ||
-                    //     startId - (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) ||
-                    //     startId - (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) ||
-                    //     startId - (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) + 6}"]`.firstChild) ||
-                    //     // plus minus - y=x
-                    //     startId + width - 1 === targetId ||
-                    //     startId + (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
-                    //     startId + (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) ||
-                    //     startId + (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) ||
-                    //     startId + (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) ||
-                    //     startId + (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) ||
-                    //     startId + (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) - 6}"]`.firstChild)
-                    // ) {
-                    //     return true
-                    // }
                     break;
                 case 'rook' :
                     // rook moving vertically down
@@ -530,16 +468,6 @@ function checkPossibilites() {
                         }
                         loc = loc + 1
                     }
-
-                    
-                // //     if (
-                // //         // vertically
-                // //         Math.abs(targetId - startId) % width === 0 && !document.querySelector(`[square-id="${targetId}"]`).firstChild && targetId != startId ||
-                // //         // horizontally - fix this to not go over rows
-                // //         Math.abs(targetId - startId) < 8
-                // //     ) {
-                // //         return true
-                // //     }
                     break;
                 case 'queen':
                     // queen moving down right
@@ -705,50 +633,6 @@ function checkPossibilites() {
                         }
                         loc = loc + 1
                     }
-
-                //     if (
-                //         // bishop
-                //         // plus plus - y=-x
-                //         startId + width + 1 === targetId ||
-                //         startId + (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`).firstChild ||
-                //         startId + (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) ||
-                //         startId + (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) ||
-                //         startId + (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) ||
-                //         startId + (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) ||
-                //         startId + (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId + width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) + 6}"]`.firstChild) ||
-                //         // minus minus - y=-x
-                //         startId - width + 1 === targetId ||
-                //         startId - (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`).firstChild ||
-                //         startId - (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) ||
-                //         startId - (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) ||
-                //         startId - (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) ||
-                //         startId - (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) ||
-                //         startId - (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId - width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) - 6}"]`.firstChild) ||
-                //         // minus plus - y=x
-                //         startId - width + 1 === targetId ||
-                //         startId - (width * 2) + 2 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`).firstChild ||
-                //         startId - (width * 3) + 3 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) ||
-                //         startId - (width * 4) + 4 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) ||
-                //         startId - (width * 5) + 5 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) ||
-                //         startId - (width * 6) + 6 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) ||
-                //         startId - (width * 7) + 7 === targetId && !document.querySelector(`[square-id="${startId - width + 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 2) + 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 3) + 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 4) + 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 5) + 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId - (width * 6) + 6}"]`.firstChild) ||
-                //         // plus minus - y=x
-                //         startId + width - 1 === targetId ||
-                //         startId + (width * 2) - 2 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`).firstChild ||
-                //         startId + (width * 3) - 3 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) ||
-                //         startId + (width * 4) - 4 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) ||
-                //         startId + (width * 5) - 5 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) ||
-                //         startId + (width * 6) - 6 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) ||
-                //         startId + (width * 7) - 7 === targetId && !document.querySelector(`[square-id="${startId + width - 1}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 2) - 2}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 3) - 3}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 4) - 4}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 5) - 5}"]`.firstChild) && !document.querySelector(`[square-id="${startId + (width * 6) - 6}"]`.firstChild) ||
-        
-                //         // rook
-                //         // vertically
-                //         Math.abs(targetId - startId) % width === 0 && !document.querySelector(`[square-id="${targetId}"]`).firstChild && targetId != startId ||
-                //         // horizontally - fix this to not go over rows
-                //         Math.abs(targetId - startId) < 8
-                //     ) {
-                //         return true
-                //     }
                     break;
                 case 'king':
                     function isPawnAttacking(curCoor) {
@@ -839,6 +723,515 @@ function checkPossibilites() {
                     break;
             }
         }
+        // else {
+        //     key = i + 1
+        //     switch(piece) {
+        //         // all comments correspond to the original black turn perspective
+        //         case 'pawn' :
+        //             // pawn moving (+0, +1)
+        //             coor = coordinates[key].slice()
+        //             coor[1]++
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["pawn"].push(key + width);
+
+        //             // pawn moving (+0, +2)
+        //             const starterRow = [9, 10, 11, 12, 13, 14, 15, 16]
+        //             if (starterRow.includes(key)) {
+        //                 coor = coordinates[key].slice()
+        //                 coor[1] += 2
+        //                 if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["pawn"].push(key + (width * 2));
+        //             }
+
+        //             // pawn moving (-1, +1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 1
+        //             coor[1] += 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["pawn"].push(key + width - 1);
+
+        //             // pawn moving (+1, -1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 1
+        //             coor[1] -= 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["pawn"].push(key + width + 1);
+                    
+        //             break;
+        //         case 'knight' :
+        //             // knight moving (+1, +2)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 1
+        //             coor[1] += 2
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key+(width*2)+1);
+
+        //             // knight moving (-1, +2)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 1
+        //             coor[1] += 2
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key+(width*2)-1);
+
+        //             // knight moving (+1, -2)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 1
+        //             coor[1] -= 2
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key-(width*2)+1);
+
+        //             // knight moving (-1, -2)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 1
+        //             coor[1] -= 2
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key-(width*2)-1);
+
+        //             // knight moving (+2, +1)
+        //             coor = 0
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 2
+        //             coor[1] += 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key+width+2);
+
+        //             // knight moving (-2, +1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 2
+        //             coor[1] += 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key+width-2);
+
+        //             // knight moving (+2, -1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 2
+        //             coor[1] -= 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key-width+2);
+
+        //             // knight moving (-2, -1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 2
+        //             coor[1] -= 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8) allMovesOpp["knight"].push(key-width-2);
+                        
+        //             break;
+        //         case 'bishop' :
+        //             // bishop moving down right
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+width+1
+        //             while (squareOpen) {
+        //                 coor[0] += 1
+        //                 coor[1] += 1
+        //                 allMovesOpp["bishop"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+        //                     // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["bishop"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + width + 1
+        //             }
+
+        //             // bishop moving up left
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-width-1
+        //             while (squareOpen) {
+        //                 coor[0] -= 1
+        //                 coor[1] -= 1
+        //                 allMovesOpp["bishop"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["bishop"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - width - 1
+        //             }
+
+        //             // bishop moving down left
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+width-1
+        //             while (squareOpen) {
+        //                 coor[0] -= 1
+        //                 coor[1] += 1
+        //                 allMovesOpp["bishop"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["bishop"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + width - 1
+        //             }
+
+        //             // bishop moving up right
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-width+1
+        //             while (squareOpen) {
+        //                 coor[0] += 1
+        //                 coor[1] -= 1
+        //                 allMovesOpp["bishop"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+        //                     // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["bishop"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - width + 1
+        //             }
+
+        //             break;
+        //         case 'rook' :
+        //             // rook moving vertically down
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+width
+        //             while (squareOpen) {
+        //                 coor[1] += 1
+        //                 allMovesOpp["rook"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     // console.log("yes", playerGo, loc, 64-loc+1,allSquares[64-loc].getAttribute("square-id"))
+        //                     // console.log(playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)                            
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["rook"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + width
+        //             }
+
+        //             // rook moving vertically up
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-width
+        //             while (squareOpen) {
+        //                 coor[1] -= 1
+        //                 allMovesOpp["rook"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["rook"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - width
+        //             }
+
+        //             // rook moving horizontally left
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-1
+        //             while (squareOpen) {
+        //                 coor[0] -= 1
+        //                 allMovesOpp["rook"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["rook"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - 1
+        //             }
+
+        //             // rook moving horizontally right
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+1
+        //             while (squareOpen) {
+        //                 coor[0] += 1
+        //                 allMovesOpp["rook"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["rook"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + 1
+        //             }
+        //             break;
+        //         case 'queen':
+        //             // queen moving down right
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+width+1
+        //             while (squareOpen) {
+        //                 coor[0] += 1
+        //                 coor[1] += 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + width + 1
+        //             }
+
+        //             // queen moving up left
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-width-1
+        //             while (squareOpen) {
+        //                 coor[0] -= 1
+        //                 coor[1] -= 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - width - 1
+        //             }
+
+        //             // queen moving down left
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+width-1
+        //             while (squareOpen) {
+        //                 coor[0] -= 1
+        //                 coor[1] += 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + width - 1
+        //             }
+
+        //             // queen moving up right
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-width+1
+        //             while (squareOpen) {
+        //                 coor[0] += 1
+        //                 coor[1] -= 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - width + 1
+        //             }
+
+        //             // queen moving vertically down
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+width
+        //             while (squareOpen) {
+        //                 coor[1] += 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + width
+        //             }
+
+        //             // queen moving vertically up
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-width
+        //             while (squareOpen) {
+        //                 coor[1] -= 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - width
+        //             }
+
+        //             // queen moving horizontally left
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key-1
+        //             while (squareOpen) {
+        //                 coor[0] -= 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc - 1
+        //             }
+
+        //             // queen moving horizontally right
+        //             squareOpen = true
+        //             coor = coordinates[key].slice()
+        //             loc = key+1
+        //             while (squareOpen) {
+        //                 coor[0] += 1
+        //                 allMovesOpp["queen"].push(loc)
+                        
+        //                 if (
+        //                     1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8 || 
+        //                     (playerGo === "black" ? !!allSquares[loc-1].firstChild : !!allSquares[64-loc].firstChild)
+        //                 ) {
+        //                     squareOpen = false
+        //                     if (1 > coor[0] || coor[0] > 8 || 1 > coor[1] || coor[1] > 8) {
+        //                         allMovesOpp["queen"].pop()
+        //                     }
+        //                 }
+        //                 loc = loc + 1
+        //             }
+        //             break;
+        //         case 'king':
+        //             function isPawnAttacking(curCoor) {
+        //                 squareOne = [curCoor[0]+1, curCoor[1]+1]
+        //                 squareTwo = [curCoor[0]-1, curCoor[1]+1]
+
+        //                 const keyOne = Object.keys(coordinates).find(keyOneTemp => coordinates[keyOneTemp].toString() === squareOne.toString());
+        //                 const keyTwo = Object.keys(coordinates).find(keyTwoTemp => coordinates[keyTwoTemp].toString() === squareTwo.toString())
+
+        //                 if (playerGo === "black") {
+        //                     currentPieceOne = allSquares[keyOne-1].firstChild?.id === "pawn"
+        //                     currentPieceTwo = allSquares[keyTwo-1].firstChild?.id === "pawn"
+        //                     if (
+        //                         (currentPieceOne && allSquares[keyOne-1].firstChild.firstChild.classList.contains("svgwhite")) ||
+        //                         (currentPieceTwo && allSquares[keyTwo-1].firstChild.firstChild.classList.contains("svgwhite"))
+        //                     ) {
+        //                         console.log(keyOne, keyTwo)
+        //                         allSquares[keyOne-1].style.backgroundColor = "blue"
+        //                         allSquares[keyTwo-1].style.backgroundColor = "blue"
+        //                         return false
+        //                     }
+        //                 } else {
+        //                     currentPieceOne = allSquares[64-keyOne].firstChild?.id === "pawn"
+        //                     currentPieceTwo = allSquares[64-keyTwo].firstChild?.id === "pawn"
+        //                     if (
+        //                         (currentPieceOne && allSquares[64-keyOne].firstChild.firstChild.classList.contains("svgblack")) ||
+        //                         (currentPieceTwo && allSquares[64-keyTwo].firstChild.firstChild.classList.contains("svgblack"))
+        //                     ) {
+        //                         console.log(keyOne, keyTwo)
+        //                         allSquares[keyOne-1].style.backgroundColor = "purple"
+        //                         allSquares[keyTwo-1].style.backgroundColor = "purple"
+        //                         return false
+        //                     }
+        //                 }
+
+        //                 return true
+                        
+        //             }
+
+        //             // king moving (+1, +0)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 1
+        //             coor[1] += 0
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key+1);
+
+        //             // king moving (-1, +0)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 1
+        //             coor[1] += 0
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key-1);
+
+        //             // king moving (+0, +1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 0
+        //             coor[1] += 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key+width);
+
+        //             // king moving (+0, -1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 0
+        //             coor[1] -= 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key-width);
+
+        //             // king moving (+1, +1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 1
+        //             coor[1] += 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key+1+width);
+
+        //             // king moving (-1, +1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 1
+        //             coor[1] += 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key-1+width);
+
+        //             // king moving (+1, -1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] += 1
+        //             coor[1] -= 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key+1-width);
+
+        //             // king moving (-1, -1)
+        //             coor = coordinates[key].slice()
+        //             coor[0] -= 1
+        //             coor[1] -= 1
+        //             if (1 <= coor[0] && coor[0] <= 8 && 1 <= coor[1] && coor[1] <= 8 && isPawnAttacking(coor)) allMovesOpp["king"].push(key-1-width);
+
+        //             break;
+        //     }
+        // }
     
     })
 
@@ -858,10 +1251,79 @@ function checkPossibilites() {
 
     // const piece = draggedElement.id
     // console.log(piece)
+    return allMoves
 }
 
-checkPossibilites() // run once at the start
+allPossibleMoves = checkPossibilites() // run once at the start
 
+
+
+
+function check() {
+    // console.log("updated", allMoves)
+    const kings = Array.from(document.querySelectorAll('#king'))
+    console.log("kings", kings[0])
+    let kingLocation
+    if (playerGo === "black") {
+        kings.forEach((king, i) => {
+            if (king.firstChild.classList.contains("svgblack")) {
+                console.log("black turn")
+                kingLocation = 64 - king.parentNode.getAttribute("square-id") + 1
+                console.log("black king location", kingLocation)
+                // console.log(king.parentNode.getAttribute("square-id"))
+
+                playerGo = "white"
+                backTrack = checkPossibilites()
+                playerGo = "black"
+
+                for (const [key, array] of Object.entries(backTrack)) {
+                    if (key != "king") {
+                        console.log(key, array)
+                        for (let i = 0; i < array.length; i++) {
+                            // console.log(Number(kingLocation), Number(array[i]))
+                            // if (kingLocation === array[i]) return true
+                            if (Number(kingLocation) === Number(array[i])) console.log("CHECK!")
+                        }
+                    }
+                }
+            }
+        })
+    } else {
+        kings.forEach((king, i) => {
+            if (king.firstChild.classList.contains("svgwhite")) {
+                console.log("white turn")
+                kingLocation = 64 - king.parentNode.getAttribute("square-id") + 1
+                console.log("white king location", kingLocation)
+                console.log(king.parentNode.getAttribute("square-id"))
+
+                // window.alert("what")
+                playerGo = "black"
+                backTrack = checkPossibilites()
+                playerGo = "white"
+
+                for (const [key, array] of Object.entries(backTrack)) {
+                    if (key != "king") {
+                        console.log(key, array)
+                        for (let i = 0; i < array.length; i++) {
+                            // console.log(Number(kingLocation), Number(array[i]))
+                            // if (kingLocation === array[i]) return true
+                            if (Number(kingLocation) === Number(array[i])) console.log("CHECK!")
+                        }
+                    }
+                }
+            }
+        })
+    }
+    return false
+}
+
+// function checkMate() {
+//     for (let i = 0; i < allMoves["king"].length; i++) {
+//         if (
+//             allMoves["pawn"].contains  allMoves["king"][i]
+//         )
+//     }
+// }
 
 function mouseover(e) {
     let hoverPiece
@@ -881,7 +1343,7 @@ function mouseover(e) {
     if (colorPiece === "svg" + playerGo) {
         allSquares.forEach(square => {
             square.style.backgroundColor = "gray"
-            if (allMoves[hoverPiece]?.includes(Number(square.getAttribute("square-id"))) && !square.firstChild?.firstChild.classList.contains("svg" + playerGo)) {
+            if (allPossibleMoves[hoverPiece]?.includes(Number(square.getAttribute("square-id"))) && !square.firstChild?.firstChild.classList.contains("svg" + playerGo)) {
                 // console.log(Number(square.getAttribute("square-id")))
                 square.style.backgroundColor = "green"
             }
@@ -927,26 +1389,15 @@ function mouseout(e) {
     })
 }
 
-
-
-// function checkMate() {
-//     pawnMoves = []
-//     knightMoves = []
-//     bishopMoves = []
-//     rookMoves = []
-//     queenMoves = []
-//     kingMoves = []
-// }
-
 function changePlayer() {
-    // make a var = checkPossibilites() and end game if checkmate immediately
-
     const squareBorder = document.querySelectorAll(".square")
     const cprefix = document.querySelectorAll(".cprefix")
 
     if (playerGo === "black") {
         playerGo = "white"
-        checkPossibilites()
+
+        allPossibleMoves = checkPossibilites()
+
         squareBorder.forEach((square) => {
             square.style.border = '3px solid black'
         });
@@ -955,10 +1406,15 @@ function changePlayer() {
         });
 
         reverseIds()
+
+        check()
+
         playerDisplay.innerHTML = "<p id='color-white'>It's <span class='bold-white'>White</span>'s Turn!</p>"
     } else {
         playerGo = "black"
-        checkPossibilites()
+
+        allPossibleMoves = checkPossibilites()
+
         squareBorder.forEach((square) => {
             square.style.border = '3px solid white'
         });
@@ -967,6 +1423,9 @@ function changePlayer() {
         });
 
         revertIds()
+
+        check()
+
         playerDisplay.innerHTML = "<p id='color-black'>It's <span class='bold-black'>Black</span>'s Turn!</p>"
     }
 }
@@ -986,12 +1445,12 @@ function revertIds() {
 function checkForWin() {
     const kings = Array.from(document.querySelectorAll('#king'))
     console.log(kings)
-    if (!kings.some(king => !king.firstChild.classList.contains("white"))) {
+    if (!kings.some(king => !king.firstChild.classList.contains("svgwhite"))) {
         playerDisplay.innerHTML = "Black Player Wins!!!"
         const allSquares = document.querySelectorAll('.square')
         allSquares.forEach(square => square.firstChild?.setAttribute('draggable', false))
     }
-    if (!kings.some(king => !king.firstChild.classList.contains("black"))) {
+    if (!kings.some(king => !king.firstChild.classList.contains("svgblack"))) {
         playerDisplay.innerHTML = "White Player Wins!!!"
         const allSquares = document.querySelectorAll('.square')
         allSquares.forEach(square => square.firstChild?.setAttribute('draggable', false))
