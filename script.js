@@ -8,11 +8,15 @@ const knight = '<div class="piece" id="knight"><svg xmlns="http://www.w3.org/200
 const gameBoard = document.getElementById("gameboard");
 const playerDisplay = document.getElementById("playerbox");
 const infoDisplay = document.getElementById("info-display");
-let allPossibleMoves = {}
+let allPossibleMoves = {};
+const gameOver = [false];
 const width = 8;
 
 let playerGo = "black";
 playerDisplay.innerHTML = "<p id='color-black'>It's <span class='bold-black'>Black</span>'s Turn!</p>";
+
+// let playerGo = "white";
+// playerDisplay.innerHTML = "<p id='color-white'>It's <span class='bold-white'>White</span>'s Turn!</p>";
 
 const startPieces = [
     rook, knight, bishop, queen, king, bishop, knight, rook,
@@ -79,13 +83,13 @@ function dragDrop(e) {
     const takenByOpponent = e.target.firstChild?.classList.contains("svg" + opponentGo) // if e.target.firstchild exists...
     // console.log(taken, takenByOpponent)
 
-    if (correctGo) {
+    if (correctGo && !gameOver[gameOver.length-1]) {
         // must check this first
         if (takenByOpponent && valid) {
             e.target.parentNode.append(draggedElement)
             e.target.remove()
-            checkForWin()
-            // checkPossibilites()
+            // checkForWin()
+            // checkPossibilities()
             changePlayer()
             return
         }
@@ -96,8 +100,8 @@ function dragDrop(e) {
         }
         else if (valid) {
             e.target.append(draggedElement)
-            checkForWin()
-            // checkPossibilites()
+            // checkForWin()
+            // checkPossibilities()
             changePlayer()
             return
         }
@@ -191,7 +195,7 @@ while (i <= 64) {
 
 // const allSquares = document.querySelectorAll(".square")
 
-function checkPossibilites() {
+function checkPossibilities() {
     allMoves = {"pawn": [], "knight": [], "bishop": [], "rook": [], "queen": [], "king": []}
     // allMovesOpp = {"pawn": [], "knight": [], "bishop": [], "rook": [], "queen": [], "king": []}
     
@@ -210,8 +214,8 @@ function checkPossibilites() {
         colors.reverse()
     }
 
-    console.log(pieces)
-    console.log(colors)
+    // console.log(pieces)
+    // console.log(colors)
 
     pieces.forEach((piece, i) => {
         if (colors[i] === "svg" + playerGo) { // only add current playerGo color piece locations to allMoves
@@ -649,9 +653,6 @@ function checkPossibilites() {
                                 (currentPieceOne && allSquares[keyOne-1].firstChild.firstChild.classList.contains("svgwhite")) ||
                                 (currentPieceTwo && allSquares[keyTwo-1].firstChild.firstChild.classList.contains("svgwhite"))
                             ) {
-                                console.log(keyOne, keyTwo)
-                                allSquares[keyOne-1].style.backgroundColor = "blue"
-                                allSquares[keyTwo-1].style.backgroundColor = "blue"
                                 return false
                             }
                         } else {
@@ -661,9 +662,6 @@ function checkPossibilites() {
                                 (currentPieceOne && allSquares[64-keyOne].firstChild.firstChild.classList.contains("svgblack")) ||
                                 (currentPieceTwo && allSquares[64-keyTwo].firstChild.firstChild.classList.contains("svgblack"))
                             ) {
-                                console.log(keyOne, keyTwo)
-                                allSquares[keyOne-1].style.backgroundColor = "purple"
-                                allSquares[keyTwo-1].style.backgroundColor = "purple"
                                 return false
                             }
                         }
@@ -1254,26 +1252,28 @@ function checkPossibilites() {
     return allMoves
 }
 
-allPossibleMoves = checkPossibilites() // run once at the start
+allPossibleMoves = checkPossibilities() // run once at the start
 
 
 
+let checked
+let backTrack
 
 function check() {
     // console.log("updated", allMoves)
     const kings = Array.from(document.querySelectorAll('#king'))
-    console.log("kings", kings[0])
+    // console.log("kings", kings[0])
     let kingLocation
     if (playerGo === "black") {
         kings.forEach((king, i) => {
             if (king.firstChild.classList.contains("svgblack")) {
-                console.log("black turn")
+                // console.log("black turn")
                 kingLocation = 64 - king.parentNode.getAttribute("square-id") + 1
-                console.log("black king location", kingLocation)
+                // console.log("black king location", kingLocation)
                 // console.log(king.parentNode.getAttribute("square-id"))
 
                 playerGo = "white"
-                backTrack = checkPossibilites()
+                backTrack = checkPossibilities()
                 playerGo = "black"
 
                 for (const [key, array] of Object.entries(backTrack)) {
@@ -1282,7 +1282,12 @@ function check() {
                         for (let i = 0; i < array.length; i++) {
                             // console.log(Number(kingLocation), Number(array[i]))
                             // if (kingLocation === array[i]) return true
-                            if (Number(kingLocation) === Number(array[i])) console.log("CHECK!")
+                            if (Number(kingLocation) === Number(array[i])) {
+                                console.log("CHECK!")
+                                checked = true
+                                // window.alert(true)
+                                // return true;
+                            }
                         }
                     }
                 }
@@ -1291,14 +1296,14 @@ function check() {
     } else {
         kings.forEach((king, i) => {
             if (king.firstChild.classList.contains("svgwhite")) {
-                console.log("white turn")
+                // console.log("white turn")
                 kingLocation = 64 - king.parentNode.getAttribute("square-id") + 1
-                console.log("white king location", kingLocation)
-                console.log(king.parentNode.getAttribute("square-id"))
+                // console.log("white king location", kingLocation)
+                // console.log(king.parentNode.getAttribute("square-id"))
 
                 // window.alert("what")
                 playerGo = "black"
-                backTrack = checkPossibilites()
+                backTrack = checkPossibilities()
                 playerGo = "white"
 
                 for (const [key, array] of Object.entries(backTrack)) {
@@ -1307,7 +1312,12 @@ function check() {
                         for (let i = 0; i < array.length; i++) {
                             // console.log(Number(kingLocation), Number(array[i]))
                             // if (kingLocation === array[i]) return true
-                            if (Number(kingLocation) === Number(array[i])) console.log("CHECK!")
+                            if (Number(kingLocation) === Number(array[i])) {
+                                console.log("CHECK!")
+                                checked = true
+                                // window.alert(true)
+                                // return true;
+                            }
                         }
                     }
                 }
@@ -1317,13 +1327,111 @@ function check() {
     return false
 }
 
-// function checkMate() {
-//     for (let i = 0; i < allMoves["king"].length; i++) {
-//         if (
-//             allMoves["pawn"].contains  allMoves["king"][i]
-//         )
-//     }
-// }
+function checkMate() {
+    // window.alert(checked)
+    check()
+    if (checked) {
+        checked = false
+        // const kings = Array.from(document.querySelectorAll('#king'))
+        // console.log("kings", kings[0])
+        // let kingLocation
+        // window.alert("checked!")
+        if (playerGo === "black") {
+            // kings.forEach((king, j) => {
+            //     if (king.firstChild.classList.contains("svgblack")) {
+            // playerGo = "white"
+            // backTrack = checkPossibilities()
+            // playerGo = "black"
+            
+            // window.alert("yo")
+            console.log("black king locations", allPossibleMoves["king"])
+            // console.log("", )
+
+            counter = 0
+            for (let i=0; i < allPossibleMoves["king"].length; i++) {
+                value = 64-(allPossibleMoves["king"][i])+1
+                if (
+                    backTrack["pawn"].includes(value) ||
+                    backTrack["knight"].includes(value) ||
+                    backTrack["bishop"].includes(value) ||
+                    backTrack["rook"].includes(value) ||
+                    backTrack["queen"].includes(value)
+                ) {
+                    counter++
+                }
+
+                if (counter === allPossibleMoves["king"].length) {
+                    console.log("CHECKMATE!!!")
+
+                    document.body.style.backgroundColor = 'rgb(8,8,8)'
+                    const squareBorder = document.querySelectorAll(".square")
+                    const cprefix = document.querySelectorAll(".cprefix")
+
+                    squareBorder.forEach((square) => {
+                        square.style.border = '3px solid white'
+                    });
+                    cprefix.forEach((prefix) => {
+                        prefix.style.color = 'white'
+                    });
+
+                    const allSquares = document.querySelectorAll(".square")
+                    allSquares.forEach(square => {
+                        square.style.backgroundColor = "red"
+                        square.firstChild?.setAttribute('draggable', false)
+                    })
+
+                    playerDisplay.innerHTML = "<p id='color-white'><span class='bold-white'>CHECKMATE!!!</span></p>"
+                    gameOver.push(true)
+                    return true
+                }
+            }
+        } else {
+            console.log("white king locations", allPossibleMoves["king"])
+            
+            counter = 0
+            for (let i=0; i < allPossibleMoves["king"].length; i++) {
+                value = 64-(allPossibleMoves["king"][i])+1
+                if (
+                    backTrack["pawn"].includes(value) ||
+                    backTrack["knight"].includes(value) ||
+                    backTrack["bishop"].includes(value) ||
+                    backTrack["rook"].includes(value) ||
+                    backTrack["queen"].includes(value)
+                ) {
+                    counter++
+                }
+
+                if (counter === allPossibleMoves.length) {
+                    console.log("CHECKMATE!!!")
+
+                    document.body.style.backgroundColor = 'rgb(8,8,8)'
+                    const squareBorder = document.querySelectorAll(".square")
+                    const cprefix = document.querySelectorAll(".cprefix")
+
+                    squareBorder.forEach((square) => {
+                        square.style.border = '3px solid white'
+                    });
+                    cprefix.forEach((prefix) => {
+                        prefix.style.color = 'white'
+                    });
+
+                    const allSquares = document.querySelectorAll(".square")
+                    allSquares.forEach(square => {
+                        square.style.backgroundColor = "red"
+                        square.firstChild?.setAttribute('draggable', false)
+                    })
+                    
+                    playerDisplay.innerHTML = "<p id='color-white'><span class='bold-white'>CHECKMATE!!!</span></p>"
+                    gameOver.push(true)
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    console.log("NEXT LINE")
+}
 
 function mouseover(e) {
     let hoverPiece
@@ -1340,7 +1448,7 @@ function mouseover(e) {
     }
     // console.log(hoverPiece)
 
-    if (colorPiece === "svg" + playerGo) {
+    if (colorPiece === "svg" + playerGo && !gameOver[gameOver.length-1]) {
         allSquares.forEach(square => {
             square.style.backgroundColor = "gray"
             if (allPossibleMoves[hoverPiece]?.includes(Number(square.getAttribute("square-id"))) && !square.firstChild?.firstChild.classList.contains("svg" + playerGo)) {
@@ -1384,9 +1492,11 @@ function mouseover(e) {
 }
 
 function mouseout(e) {
-    allSquares.forEach(square => {
-        square.style.backgroundColor = null
-    })
+    if (!gameOver[gameOver.length-1]) {
+        allSquares.forEach(square => {
+            square.style.backgroundColor = null
+        })
+    }    
 }
 
 function changePlayer() {
@@ -1396,7 +1506,7 @@ function changePlayer() {
     if (playerGo === "black") {
         playerGo = "white"
 
-        allPossibleMoves = checkPossibilites()
+        allPossibleMoves = checkPossibilities()
 
         squareBorder.forEach((square) => {
             square.style.border = '3px solid black'
@@ -1407,13 +1517,15 @@ function changePlayer() {
 
         reverseIds()
 
-        check()
-
-        playerDisplay.innerHTML = "<p id='color-white'>It's <span class='bold-white'>White</span>'s Turn!</p>"
+        // check()
+        checkMate()
+        if (!gameOver[gameOver.length-1]) {
+            playerDisplay.innerHTML = "<p id='color-white'>It's <span class='bold-white'>White</span>'s Turn!</p>"
+        }
     } else {
         playerGo = "black"
 
-        allPossibleMoves = checkPossibilites()
+        allPossibleMoves = checkPossibilities()
 
         squareBorder.forEach((square) => {
             square.style.border = '3px solid white'
@@ -1424,9 +1536,11 @@ function changePlayer() {
 
         revertIds()
 
-        check()
-
-        playerDisplay.innerHTML = "<p id='color-black'>It's <span class='bold-black'>Black</span>'s Turn!</p>"
+        // check()
+        checkMate()
+        if (!gameOver[gameOver.length-1]) {
+            playerDisplay.innerHTML = "<p id='color-black'>It's <span class='bold-black'>Black</span>'s Turn!</p>"
+        }
     }
 }
 
@@ -1442,282 +1556,17 @@ function revertIds() {
         square.setAttribute('square-id', i + 1))
 }
 
-function checkForWin() {
-    const kings = Array.from(document.querySelectorAll('#king'))
-    console.log(kings)
-    if (!kings.some(king => !king.firstChild.classList.contains("svgwhite"))) {
-        playerDisplay.innerHTML = "Black Player Wins!!!"
-        const allSquares = document.querySelectorAll('.square')
-        allSquares.forEach(square => square.firstChild?.setAttribute('draggable', false))
-    }
-    if (!kings.some(king => !king.firstChild.classList.contains("svgblack"))) {
-        playerDisplay.innerHTML = "White Player Wins!!!"
-        const allSquares = document.querySelectorAll('.square')
-        allSquares.forEach(square => square.firstChild?.setAttribute('draggable', false))
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-// let main = {
-
-//     variables: {
-//       turn: 'w',
-//       selectedpiece: '',
-//       highlighted: [],
-//       pieces: {
-//         w_king: {
-//           position: 'e1',
-//           img: '&#9812;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_king'
-          
-//         },
-//         w_queen: {
-//           position: 'd1',
-//           img: '&#9813;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_queen'
-//         },
-//         w_bishop1: {
-//           position: 'c1',
-//           img: '&#9815;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_bishop'
-//         },
-//         w_bishop2: {
-//           position: 'f1',
-//           img: '&#9815;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_bishop'
-//         },
-//         w_knight1: {
-//           position: 'b1',
-//           img: '&#9816;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_knight'
-//         },
-//         w_knight2: {
-//           position: 'g1',
-//           img: '&#9816;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_knight'
-//         },
-//         w_rook1: {
-//           position: 'a1',
-//           img: '&#9814;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_rook'
-//         },
-//         w_rook2: {
-//           position: 'h1',
-//           img: '&#9814;',
-//           captured: false,
-//           moved: false,
-//           type: 'w_rook'
-//         },
-//         w_pawn1: {
-//           position: 'a2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn2: {
-//           position: 'b2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn3: {
-//           position: 'c2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn4: {
-//           position: 'd2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn5: {
-//           position: 'e2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn6: {
-//           position: 'f2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn7: {
-//           position: 'g2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-//         w_pawn8: {
-//           position: 'h2',
-//           img: '&#9817;',
-//           captured: false,
-//           type: 'w_pawn',
-//           moved: false
-//         },
-  
-//         b_king: {
-//           position: 'e8',
-//           img: '&#9818;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_king'
-//         },
-//         b_queen: {
-//           position: 'd8',
-//           img: '&#9819;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_queen'
-//         },
-//         b_bishop1: {
-//           position: 'c8',
-//           img: '&#9821;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_bishop'
-//         },
-//         b_bishop2: {
-//           position: 'f8',
-//           img: '&#9821;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_bishop'
-//         },
-//         b_knight1: {
-//           position: 'b8',
-//           img: '&#9822;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_knight'
-//         },
-//         b_knight2: {
-//           position: 'g8',
-//           img: '&#9822;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_knight'
-//         },
-//         b_rook1: {
-//           position: 'a8',
-//           img: '&#9820;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_rook'
-//         },
-//         b_rook2: {
-//           position: 'h8',
-//           img: '&#9820;',
-//           captured: false,
-//           moved: false,
-//           type: 'b_rook'
-//         },
-//         b_pawn1: {
-//           position: 'a7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn2: {
-//           position: 'b7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn3: {
-//           position: 'c7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn4: {
-//           position: 'd7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn5: {
-//           position: 'e7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn6: {
-//           position: 'f7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn7: {
-//           position: 'g7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         },
-//         b_pawn8: {
-//           position: 'h7',
-//           img: '&#9823;',
-//           captured: false,
-//           type: 'b_pawn',
-//           moved: false
-//         }
-  
-//       }
-//     },
-
-//     methods: {
-//         gamesetup: function() {
-//           $('.gamecell').attr('chess', 'null');
-//           for (let gamepiece in main.variables.pieces) {
-//             $('#' + main.variables.pieces[gamepiece].position).html(main.variables.pieces[gamepiece].img);
-//             $('#' + main.variables.pieces[gamepiece].position).attr('chess', gamepiece);
-//             // $(main.variables.pieces[gamepiece].img).css("color", "blue");
-//             // $('#' + main.variables.pieces[gamepiece].img).css("min-height", "100%");
-//           }
-//         }
+// function checkForWin() {
+//     const kings = Array.from(document.querySelectorAll('#king'))
+//     console.log(kings)
+//     if (!kings.some(king => !king.firstChild.classList.contains("svgwhite"))) {
+//         playerDisplay.innerHTML = "Black Player Wins!!!"
+//         const allSquares = document.querySelectorAll('.square')
+//         allSquares.forEach(square => square.firstChild?.setAttribute('draggable', false))
 //     }
-// };
-
-// $(document).ready(function() {
-//     main.methods.gamesetup();
-// });
+//     if (!kings.some(king => !king.firstChild.classList.contains("svgblack"))) {
+//         playerDisplay.innerHTML = "White Player Wins!!!"
+//         const allSquares = document.querySelectorAll('.square')
+//         allSquares.forEach(square => square.firstChild?.setAttribute('draggable', false))
+//     }
+// }
